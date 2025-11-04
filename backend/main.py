@@ -6,6 +6,7 @@ from mediapipe.framework.formats import landmark_pb2
 import cv2
 import numpy as np
 import math
+import requests
 
 # Lite Model
 lite_model = 'pose_landmarker_lite.task'
@@ -75,7 +76,7 @@ def detector(nose, left_eye, right_eye, left_shoulder, right_shoulder):
     elif score < 70:
         posture_state = "Poor"
 
-    return {
+    data = {
         "head_tilt_angle": round(head_tilt_angle, 2),
         "shoulder_imbalance": round(dy_shoulders, 2),
         "score": round(score, 0),
@@ -83,6 +84,10 @@ def detector(nose, left_eye, right_eye, left_shoulder, right_shoulder):
         "forward_slouch_score": round(forward_score, 1),
         "shoulder_tilt": round(shoulder_imbalance_score, 1)
     }
+
+    response = requests.post("http://127.0.0.1:8000/score", json=data)
+
+    return data
     
 
 options = vision.PoseLandmarkerOptions(
