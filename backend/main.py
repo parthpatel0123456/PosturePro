@@ -34,45 +34,54 @@ def print_result(result, output_image, timesamp_ms):
     latest_result = result
 
 def detector(nose, left_eye, right_eye, left_shoulder, right_shoulder):
+    # Head Tilt
     dx_eyes = right_eye.x - left_eye.x
     dy_eyes = right_eye.y - left_eye.y
-    head_tilt_angle = math.degrees(math.atan2(dy_eyes, dx_eyes))
-    head_tilt_angle = abs(head_tilt_angle)
+    head_tilt_angle = abs(math.degrees(math.atan2(dy_eyes, dx_eyes)))
 
-    shoulder_center_x = (left_shoulder.x + right_shoulder.x) / 2
-    shoulder_center_z = (left_shoulder.z + right_shoulder.z) / 2
-    dx_forward = abs(nose.x - shoulder_center_x)
-    dz_forward = nose.z - shoulder_center_z 
+    # Forward Slouch
+    z_eyes = (left_eye.z + right_eye.z) / 2
+    z_shoulders = (left_shoulder.z + right_shoulder.z) / 2
+    dz_leaning_forward = abs(z_shoulders - z_eyes)
+    upright_dz_reference = 0.15
 
+    # Shoulder Tilt
     dy_shoulders = abs(left_shoulder.y - right_shoulder.y)
 
-    tilt_bad = head_tilt_angle > 10
-    forward_bad = dx_forward > 0.08
-    imbalance_bad = dy_shoulders > 0.03
+    # Bad Tolerances
+    tilt_bad = abs(head_tilt_angle - 180) > 25
+    shoulder_imbalance_bad = dy_shoulders > 0.03
+    head_slouch_bad = dz_leaning_forward > 0.10
 
-    score = 100
-    if tilt_bad:
-        score -= 20
-    if forward_bad:
-        score -= 40
-    if imbalance_bad:
-        score -= 30
+    weights = {
+        "head_tilt": 0.3,
+        "forward_slouch": 0.4,
+        "shoulder_tilt": 0.3
+    }
 
-    posture_state = ""
-    if score >= 85:
-        posture_state = "Good"
-    elif score < 85 and score > 70:
+    tilt_score = max(0, 1 - min(abs(head_tilt_angle - 180) / 30, 1))
+    forward_score = min(max(0, 1 - (dz_leaning_forward - upright_dz_reference) / upright_dz_reference), 1)
+    shoulder_imbalance_score = max(0, 1 - min(dy_shoulders / 0.05, 1))
+
+    score = (
+        tilt_score * weights["head_tilt"] +
+        forward_score * weights["forward_slouch"] + 
+        shoulder_imbalance_score * weights["shoulder_tilt"]
+    ) * 100
+
+    posture_state = "Good"
+    if score < 85 and score >= 70:
         posture_state = "Moderate"
     elif score < 70:
         posture_state = "Poor"
 
     return {
         "head_tilt_angle": round(head_tilt_angle, 2),
-        "forward_head_dx": round(dx_forward, 3),
-        "forward_head_dz": round(dz_forward, 3),
-        "shoulder_imbalance": round(dy_shoulders, 3),
-        "score": score,
-        "posture_state": posture_state
+        "shoulder_imbalance": round(dy_shoulders, 2),
+        "score": round(score, 0),
+        "tilt_score": round(tilt_score, 1),
+        "forward_slouch_score": round(forward_score, 1),
+        "shoulder_tilt": round(shoulder_imbalance_score, 1)
     }
     
 
@@ -123,7 +132,10 @@ with PoseLandmarker.create_from_options(options) as landmarker:
 
             result = detector(nose, left_eye, right_eye, left_shoulder, right_shoulder)
 
-            cv2.putText(annotated_image, f"Posture: {result['posture_state']}", (30,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.putText(annotated_image, f"Score: {result['score']}", (30,100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.putText(annotated_image, f"tilt_score: {result['tilt_score']}", (30,150), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.putText(annotated_image, f"forward_slouch_score: {result['forward_slouch_score']}", (30,200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+            cv2.putText(annotated_image, f"shoulder_tilt: {result['shoulder_tilt']}", (30,250), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
 
             cv2.imshow("AI Posture Detector", annotated_image)
         
