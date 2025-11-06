@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               connect-src ws://127.0.0.1:8000;
+               script-src 'self'"
+    />
+
+    <title>Hello from Electron renderer!</title>
+  </head>
+  <body>
+    <h1>Posture Score Dashboard</h1>
+    <p>Score: <span id="score">0</span></p>
+    <p>Tilt: <span id="tilt">0</span></p>
+    <p>Forward Slouch: <span id="forward">0</span></p>
+    <p>Shoulder Tilt: <span id="shoulder">0</span></p>
+    <script src="renderer.js"></script>
+  </body>
+</html>
