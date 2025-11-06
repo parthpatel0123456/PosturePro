@@ -77,8 +77,6 @@ def detector(nose, left_eye, right_eye, left_shoulder, right_shoulder):
         posture_state = "Poor"
 
     data = {
-        "head_tilt_angle": round(head_tilt_angle, 2),
-        "shoulder_imbalance": round(dy_shoulders, 2),
         "score": round(score, 0),
         "tilt_score": round(tilt_score, 1),
         "forward_slouch_score": round(forward_score, 1),
@@ -88,7 +86,6 @@ def detector(nose, left_eye, right_eye, left_shoulder, right_shoulder):
     response = requests.post("http://127.0.0.1:8000/score", json=data)
 
     return data
-    
 
 options = vision.PoseLandmarkerOptions(
     base_options=BaseOptions(model_asset_path=model_path), 
@@ -121,7 +118,6 @@ with PoseLandmarker.create_from_options(options) as landmarker:
                     visibility=lm.visibility, presence=lm.presence
                 )
 
-
             mp_drawing.draw_landmarks(
                 annotated_image,
                 pose_landmarks,
@@ -146,7 +142,6 @@ with PoseLandmarker.create_from_options(options) as landmarker:
         
         if cv2.waitKey(1) & 0xFF == 27:
             break
-
 
 cap.release()
 cv2.destroyAllWindows()

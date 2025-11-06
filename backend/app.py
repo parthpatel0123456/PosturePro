@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from pydantic import BaseModel
+import asyncio
 
 class Item(BaseModel):
     score: float
@@ -9,7 +10,7 @@ class Item(BaseModel):
 
 app = FastAPI()
 
-global_score = Item
+global_score = None
 
 @app.get("/score")
 async def get_posture_score():
@@ -30,3 +31,11 @@ async def delete_posture_score():
     global_score = None
 
     return {"message": "Deleted score"}
+
+@app.websocket("/score/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        if global_score is not None:
+            await websocket.send_json(global_score.model_dump())
+        await asyncio.sleep(0.2)
