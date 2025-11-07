@@ -4,24 +4,25 @@ const liquidGlass = require("electron-liquid-glass");
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 640,
-    height: 340,
+    width: 500,
+    height: 350,
     resizable: false,
     frame: false,
     transparent: true,
-    // backgroundColor: "#00000000",
-    // vibrancy: {
-    //   theme: nativeTheme.shouldUseDarkColors ? "dark" : "light",
-    //   effect: "under-window", // or "behind-window"
-    //   useCustomWindowRefreshMethod: true,
-    // },
-    // visualEffectState: "active",
-    vibrancy: false,
-    // webPreferences: {
-    //   nodeIntegration: true,
-    //   contextIsolation: false,
-    // },
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    vibrancy: {
+      theme: nativeTheme.shouldUseDarkColors ? "dark" : "light",
+      material: "hud",
+      effect: "under-window", // or "behind-window"
+    },
+    visualEffectState: "active",
+    // vibrancy: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
     alwaysOnTop: true,
+    hasShadow: true,
   });
 
   win.loadFile("index.html");
@@ -30,15 +31,16 @@ function createWindow() {
     win.show();
   });
 
-  win.webContents.once("did-finish-load", () => {
-    const glassId = liquidGlass.addView(win.getNativeWindowHandle(), {
-      tintColor: "rgba(0, 0, 0, 0.28)",
-      blurRadius: 20,
-    });
-  });
-
   globalShortcut.register("CommandOrControl+Alt+R", () => {
     app.quit();
+  });
+
+  globalShortcut.register("CommandOrControl+\\", () => {
+    win.setPosition(1750, 1250);
+  });
+
+  globalShortcut.register("CommandOrControl+Down", () => {
+    win.setPosition(500, 375);
   });
 }
 
