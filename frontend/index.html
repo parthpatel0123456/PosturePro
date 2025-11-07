@@ -2,22 +2,34 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self';
-               connect-src ws://127.0.0.1:8000;
-               script-src 'self'"
+               script-src 'self';
+               style-src 'self' 'unsafe-inline';
+               connect-src ws://127.0.0.1:8000;"
     />
-
-    <title>Hello from Electron renderer!</title>
+    <link
+      rel="stylesheet"
+      href="styles.css"
+    />
   </head>
   <body>
-    <h1>Posture Score Dashboard</h1>
-    <p>Score: <span id="score">0</span></p>
-    <p>Tilt: <span id="tilt">0</span></p>
-    <p>Forward Slouch: <span id="forward">0</span></p>
-    <p>Shoulder Tilt: <span id="shoulder">0</span></p>
+    <div class="background-image"></div>
+    <div class="background-blur"></div>
+    <div class="dashboard">
+      <!-- <h1>Posture Dashboard</h1> -->
+
+      <div class="main-score">
+        <span id="score"></span>
+      </div>
+
+      <div class="score-row"><span>Tilt</span><span id="tilt"></span></div>
+
+      <div class="score-row"><span>Forward Slouch</span><span id="forward"></span></div>
+
+      <div class="score-row"><span>Shoulder Tilt</span><span id="shoulder"></span></div>
+    </div>
     <script src="renderer.js"></script>
   </body>
 </html>

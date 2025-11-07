@@ -1,0 +1,108 @@
+:root {
+  --color-primary: rgba(255, 255, 255, 0.75);
+  --color-good: #5af3b3;
+  --color-mid: #facc15;
+  --color-bad: #ff6b6b;
+  --color-text-high: rgba(255, 255, 255, 0.95);
+  --color-text-mid: rgba(255, 255, 255, 0.75);
+  --color-bg-dark: rgba(25, 25, 30, 0.55);
+  --color-border: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Global --- */
+html,
+body {
+  /* background: rgba(0, 0, 0, 0.25); */
+  backdrop-filter: blur(60px) saturate(200%);
+  -webkit-backdrop-filter: blur(60px) saturate(200%);
+  -webkit-app-region: drag;
+
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  color: var(--color-text-high);
+}
+
+/* --- Dashboard --- */
+.dashboard {
+  width: 90%;
+  max-width: 600px;
+  border-radius: 22px;
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.4), inset 0 0 0.5px rgba(255, 255, 255, 0.1);
+  padding: 32px;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.dashboard * {
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Main score --- */
+.main-score {
+  border-radius: 16px;
+  text-align: center;
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+#score {
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+
+.score-label {
+  font-weight: 600;
+  color: var(--color-text-mid);
+  letter-spacing: 0.5px;
+}
+
+/* --- Rows --- */
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  color: var(--color-text-mid);
+  transition: background 0.3s ease;
+}
+
+.score-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.score-row + .score-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* --- Animated glow for score --- */
+.glow-good {
+  text-shadow: 0 0 15px var(--color-good);
+}
+
+.glow-mid {
+  text-shadow: 0 0 15px var(--color-mid);
+}
+
+.glow-bad {
+  text-shadow: 0 0 15px var(--color-bad);
+}
